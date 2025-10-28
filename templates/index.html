@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credit Score Prediction</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+        header {
+            background-color: #0056b3;
+            color: white;
+            padding: 20px 30px;
+            text-align: center;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 1.8em;
+        }
+        form {
+            padding: 30px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        .form-group label {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        .form-group input, .form-group select {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 0.95em;
+        }
+        .form-group input:focus {
+            border-color: #0056b3;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(0,86,179,0.2);
+        }
+        .full-width {
+            grid-column: 1 / -1;
+        }
+        button {
+            grid-column: 1 / -1;
+            padding: 12px;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: white;
+            background-color: #007bff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            padding: 0 30px 30px;
+            text-align: center;
+        }
+        .prediction-box {
+            font-size: 1.5em;
+            font-weight: bold;
+            padding: 20px;
+            border-radius: 4px;
+            display: none; /* Hidden by default */
+        }
+        .Good { background-color: #e6f7ec; color: #006421; }
+        .Standard { background-color: #fffbeb; color: #b8860b; }
+        .Poor { background-color: #ffeeeb; color: #c00; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Credit Score Prediction</h1>
+        </header>
+
+        <form id="credit-form">
+            
+            <div class="form-group">
+                <label for="Age">Age</label>
+                <input type="text" id="Age" value="23" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="Occupation">Occupation</label>
+                <input type="text" id="Occupation" value="Scientist" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="Annual_Income">Annual Income</label>
+                <input type="text" id="Annual_Income" value="19114.12" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="Monthly_Inhand_Salary">Monthly Inhand Salary</label>
+                <input type="text" id="Monthly_Inhand_Salary" value="1824.843333" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="Num_Bank_Accounts">Num Bank Accounts</label>
+                <input type="text" id="Num_Bank_Accounts" value="3" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="Num_Credit_Card">Num Credit Cards</label>
+                <input type="text" id="Num_Credit_Card" value="3" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="Interest_Rate">Interest Rate</label>
+                <input type="text" id="Interest_Rate" value="3" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="Num_of_Loan">Num of Loans</label>
+                <input type="text" id="Num_of_Loan" value="3" required>
+            </div>
+
+            <div class="form-group">
+                <label for="Type_of_Loan">Type of Loan (or leave blank)</label>
+                <input type="text" id="Type_of_Loan" placeholder="e.g., Student Loan, Personal Loan">
+            </div>
+
+            <div class="form-group">
+                <label for="Delay_from_due_date">Delay from Due Date (days)</label>
+                <input type="text" id="Delay_from_due_date" value="3" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="Num_of_Delayed_Payment">Num of Delayed Payments</label>
+                <input type="text" id="Num_of_Delayed_Payment" value="7" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="Changed_Credit_Limit">Changed Credit Limit</label>
+                <input type="text" id="Changed_Credit_Limit" value="11.27" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="Num_Credit_Inquiries">Num Credit Inquiries</label>
+                <input type="text" id="Num_Credit_Inquiries" value="4" required>
+            </div>
+
+            <div class="form-group">
+                <label for="Credit_Mix">Credit Mix</label>
+                <select id="Credit_Mix" required>
+                    <option value="Good" selected>Good</option>
+                    <option value="Standard">Standard</option>
+                    <option value="Poor">Poor</option>
+                    <option value="nan">Unknown</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="Outstanding_Debt">Outstanding Debt</label>
+                <input type="text" id="Outstanding_Debt" value="809.98" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="Credit_Utilization_Ratio">Credit Utilization Ratio</label>
+                <input type="text" id="Credit_Utilization_Ratio" value="26.82" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="Credit_History_Age">Credit History Age</label>
+                <input type="text" id="Credit_History_Age" value="22 Years and 1 Months" required>
+            </div>
+
+            <div class="form-group">
+                <label for="Payment_of_Min_Amount">Payment of Min Amount</label>
+                <select id="Payment_of_Min_Amount" required>
+                    <option value="No" selected>No</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No_Minimum">No Minimum (NM)</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="Total_EMI_per_month">Total EMI per Month</label>
+                <input type="text" id="Total_EMI_per_month" value="49.57" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="Amount_invested_monthly">Amount Invested Monthly</label>
+                <input type="text" id="Amount_invested_monthly" value="80.41" required>
+            </div>
+
+            <div class="form-group">
+                <label for="Payment_Behaviour">Payment Behaviour</label>
+                <input type="text" id="Payment_Behaviour" value="High_spent_Small_value_payments" required>
+            </div>
+            
+            <div class="form-group full-width">
+                <label for="Monthly_Balance">Monthly Balance</label>
+                <input type="text" id="Monthly_Balance" value="312.49" required>
+            </div>
+            
+            <button type="submit">Predict Credit Score</button>
+        </form>
+
+        <div id="result">
+            <div id="prediction-box" class="prediction-box"></div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('credit-form').addEventListener('submit', async function(event) {
+            // Prevent the form from reloading the page
+            event.preventDefault();
+
+            // 1. Get all values from the form
+            const data = {
+                Age: document.getElementById('Age').value,
+                Occupation: document.getElementById('Occupation').value,
+                Annual_Income: document.getElementById('Annual_Income').value,
+                Monthly_Inhand_Salary: document.getElementById('Monthly_Inhand_Salary').value,
+                Num_Bank_Accounts: document.getElementById('Num_Bank_Accounts').value,
+                Num_Credit_Card: document.getElementById('Num_Credit_Card').value,
+                Interest_Rate: document.getElementById('Interest_Rate').value,
+                Num_of_Loan: document.getElementById('Num_of_Loan').value,
+                Type_of_Loan: document.getElementById('Type_of_Loan').value || null, // Handle empty string
+                Delay_from_due_date: document.getElementById('Delay_from_due_date').value,
+                Num_of_Delayed_Payment: document.getElementById('Num_of_Delayed_Payment').value,
+                Changed_Credit_Limit: document.getElementById('Changed_Credit_Limit').value,
+                Num_Credit_Inquiries: document.getElementById('Num_Credit_Inquiries').value,
+                Credit_Mix: document.getElementById('Credit_Mix').value,
+                Outstanding_Debt: document.getElementById('Outstanding_Debt').value,
+                Credit_Utilization_Ratio: document.getElementById('Credit_Utilization_Ratio').value,
+                Credit_History_Age: document.getElementById('Credit_History_Age').value,
+                Payment_of_Min_Amount: document.getElementById('Payment_of_Min_Amount').value,
+                Total_EMI_per_month: document.getElementById('Total_EMI_per_month').value,
+                Amount_invested_monthly: document.getElementById('Amount_invested_monthly').value,
+                Payment_Behaviour: document.getElementById('Payment_Behaviour').value,
+                Monthly_Balance: document.getElementById('Monthly_Balance').value,
+            };
+
+            // 2. Send the data to your /predict API
+            const response = await fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            // 3. Get the prediction back
+            const result = await response.json();
+
+            // 4. Display the prediction
+            const resultBox = document.getElementById('prediction-box');
+            if (result.prediction) {
+                const prediction = result.prediction; // "Good", "Standard", or "Poor"
+                resultBox.innerHTML = `Predicted Score: <strong>${prediction}</strong>`;
+                
+                // Set style based on prediction
+                resultBox.className = 'prediction-box'; // Reset classes
+                resultBox.classList.add(prediction);   // Add new class (Good, Standard, or Poor)
+                
+                resultBox.style.display = 'block'; // Show the box
+            } else {
+                // Show an error if something went wrong
+                resultBox.innerHTML = `Error: ${result.error || 'Unknown error'}`;
+                resultBox.className = 'prediction-box Poor';
+                resultBox.style.display = 'block';
+            }
+        });
+    </script>
+
+</body>
+</html>
